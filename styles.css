@@ -143,6 +143,64 @@ button:active {
   background: var(--portal-b);
 }
 
+.leaderboard {
+  margin-top: 0.8rem;
+  border: 1px solid #3a4f76;
+  border-radius: 10px;
+  padding: 0.65rem 0.7rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.leaderboard h2 {
+  margin: 0 0 0.45rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8fc8ff;
+}
+
+.highscores {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.highscores li {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text);
+  font-size: 0.85rem;
+  padding-right: 0.15rem;
+}
+
+.score-form {
+  margin-top: 0.55rem;
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.score-form label {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.score-form input {
+  background: #1a2740;
+  color: var(--text);
+  border: 1px solid #4f638a;
+  border-radius: 8px;
+  padding: 0.35rem 0.45rem;
+  font: inherit;
+}
+
+.score-form input:focus {
+  outline: 1px solid var(--focus);
+  outline-offset: 1px;
+}
+
 .controls {
   margin-top: 0.85rem;
   display: grid;

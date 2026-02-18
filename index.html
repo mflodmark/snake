@@ -18,6 +18,15 @@
       </div>
       <div id="status" class="status" aria-live="polite"></div>
       <div id="board" class="board" aria-label="Snake board"></div>
+      <section class="leaderboard" aria-label="High scores">
+        <h2>Top 3</h2>
+        <ol id="highscores" class="highscores"></ol>
+        <form id="score-form" class="score-form" hidden>
+          <label for="name-input">New high score! Name:</label>
+          <input id="name-input" name="name" type="text" maxlength="16" placeholder="Player" />
+          <button type="submit">Save Score</button>
+        </form>
+      </section>
       <div class="controls" aria-label="Directional controls">
         <button data-dir="UP" type="button">Up</button>
         <div class="controls-row">

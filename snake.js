@@ -6,6 +6,12 @@ import {
   stepGame,
   togglePause,
 } from './snake-core.js';
+import {
+  addHighScore,
+  loadHighScores,
+  qualifiesForHighScore,
+  saveHighScores,
+} from './highscores.js';
 
 const GRID_SIZE = 16;
 
@@ -14,12 +20,17 @@ const scoreEl = document.querySelector('#score');
 const comboEl = document.querySelector('#combo');
 const modeEl = document.querySelector('#mode');
 const statusEl = document.querySelector('#status');
+const highscoresEl = document.querySelector('#highscores');
+const scoreFormEl = document.querySelector('#score-form');
+const nameInputEl = document.querySelector('#name-input');
 const pauseBtn = document.querySelector('#pause-btn');
 const restartBtn = document.querySelector('#restart-btn');
 const dirButtons = Array.from(document.querySelectorAll('[data-dir]'));
 
 let state = createInitialState(GRID_SIZE);
 let timerId = null;
+let highScores = loadHighScores(window.localStorage);
+let submittedCurrentRun = false;
 
 board.style.gridTemplateColumns = `repeat(${state.gridSize}, 1fr)`;
 board.style.gridTemplateRows = `repeat(${state.gridSize}, 1fr)`;
@@ -44,6 +55,10 @@ function render() {
     statusEl.textContent = '';
   }
 
+  const canSubmit = state.isGameOver && !submittedCurrentRun && qualifiesForHighScore(highScores, state.score);
+  scoreFormEl.hidden = !canSubmit;
+  if (canSubmit && document.activeElement !== nameInputEl) nameInputEl.focus();
+
   const snakeSet = new Set(state.snake.map((part) => `${part.x},${part.y}`));
   const foodKey = state.food ? `${state.food.x},${state.food.y}` : null;
   const portalAKey = state.portals ? `${state.portals.a.x},${state.portals.a.y}` : null;
@@ -63,6 +78,23 @@ function render() {
   }
 
   board.innerHTML = cells.join('');
+
+  highscoresEl.innerHTML = '';
+  if (highScores.length === 0) {
+    const li = document.createElement('li');
+    li.textContent = 'No scores yet';
+    highscoresEl.appendChild(li);
+  } else {
+    for (const entry of highScores) {
+      const li = document.createElement('li');
+      const name = document.createElement('span');
+      const score = document.createElement('strong');
+      name.textContent = entry.name;
+      score.textContent = String(entry.score);
+      li.append(name, score);
+      highscoresEl.appendChild(li);
+    }
+  }
 }
 
 function scheduleTick() {
@@ -120,6 +152,18 @@ pauseBtn.addEventListener('click', () => {
 
 restartBtn.addEventListener('click', () => {
   state = restartGame(state);
+  submittedCurrentRun = false;
+  render();
+});
+
+scoreFormEl.addEventListener('submit', (event) => {
+  event.preventDefault();
+  if (!state.isGameOver || submittedCurrentRun) return;
+  if (!qualifiesForHighScore(highScores, state.score)) return;
+  highScores = addHighScore(highScores, nameInputEl.value, state.score);
+  saveHighScores(window.localStorage, highScores);
+  submittedCurrentRun = true;
+  scoreFormEl.reset();
   render();
 });
 
