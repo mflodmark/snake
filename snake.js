@@ -6,6 +6,7 @@ import {
   stepGame,
   togglePause,
 } from './snake-core.js';
+import { createSeededRng, getDailySeedLabel } from './daily-seed.js';
 import {
   addHighScore,
   loadHighScores,
@@ -19,6 +20,7 @@ const board = document.querySelector('#board');
 const scoreEl = document.querySelector('#score');
 const comboEl = document.querySelector('#combo');
 const modeEl = document.querySelector('#mode');
+const seedEl = document.querySelector('#seed');
 const statusEl = document.querySelector('#status');
 const highscoresEl = document.querySelector('#highscores');
 const scoreFormEl = document.querySelector('#score-form');
@@ -27,7 +29,9 @@ const pauseBtn = document.querySelector('#pause-btn');
 const restartBtn = document.querySelector('#restart-btn');
 const dirButtons = Array.from(document.querySelectorAll('[data-dir]'));
 
-let state = createInitialState(GRID_SIZE);
+let challengeSeed = getDailySeedLabel();
+let rng = createSeededRng(challengeSeed);
+let state = createInitialState(GRID_SIZE, rng);
 let timerId = null;
 let highScores = loadHighScores(window.localStorage);
 let submittedCurrentRun = false;
@@ -38,6 +42,7 @@ board.style.gridTemplateRows = `repeat(${state.gridSize}, 1fr)`;
 function render() {
   scoreEl.textContent = String(state.score);
   comboEl.textContent = state.combo > 1 ? `x${state.combo}` : 'x1';
+  seedEl.textContent = challengeSeed;
   if (state.wrapTicksLeft > 0) modeEl.textContent = `Wrap (${state.wrapTicksLeft})`;
   else if (state.portals) modeEl.textContent = `Portals (${state.portals.ttl})`;
   else modeEl.textContent = 'Classic';
@@ -100,7 +105,7 @@ function render() {
 function scheduleTick() {
   clearTimeout(timerId);
   timerId = setTimeout(() => {
-    state = stepGame(state);
+    state = stepGame(state, rng);
     render();
     scheduleTick();
   }, getTickMs(state));
@@ -151,7 +156,9 @@ pauseBtn.addEventListener('click', () => {
 });
 
 restartBtn.addEventListener('click', () => {
-  state = restartGame(state);
+  challengeSeed = getDailySeedLabel();
+  rng = createSeededRng(challengeSeed);
+  state = restartGame(state, rng);
   submittedCurrentRun = false;
   render();
 });
