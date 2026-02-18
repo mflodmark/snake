@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>Snake</h1>
+      <div class="hud">
+        <p>Score: <span id="score">0</span></p>
+        <p>Combo: <span id="combo">x1</span></p>
+        <p>Mode: <span id="mode">Classic</span></p>
+        <button id="pause-btn" type="button">Pause</button>
+        <button id="restart-btn" type="button">Restart</button>
+      </div>
+      <div id="status" class="status" aria-live="polite"></div>
+      <div id="board" class="board" aria-label="Snake board"></div>
+      <div class="controls" aria-label="Directional controls">
+        <button data-dir="UP" type="button">Up</button>
+        <div class="controls-row">
+          <button data-dir="LEFT" type="button">Left</button>
+          <button data-dir="DOWN" type="button">Down</button>
+          <button data-dir="RIGHT" type="button">Right</button>
+        </div>
+      </div>
+      <p class="hint">Arrow keys/WASD. Space to pause. Gold food grants wrap mode. Blue/violet portals teleport you.</p>
+    </main>
+    <script type="module" src="./snake.js"></script>
+  </body>
+</html>
